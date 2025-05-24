@@ -32,6 +32,14 @@ db = connection.get_database("people")
 async def root():
     return {"message": "I am working fine!"}
 
+@app.get("/health")
+async def health():
+    try:
+        db.command("ping")
+        return JSONResponse(content={"status": "ok"}, status_code=200)
+    except Exception as e:
+        return JSONResponse(content={"status": "error", "message": str(e)}, status_code=500)
+
 @app.post("/person")
 async def create_person(person_req: Person):
     person_dict = person_req.model_dump()
